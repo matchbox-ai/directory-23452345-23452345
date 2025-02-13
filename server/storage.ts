@@ -1,4 +1,6 @@
-import { type Clinic, type ContactRequest, type InsertContactRequest } from "@shared/schema";
+import { clinics, contactRequests, type Clinic, type ContactRequest, type InsertContactRequest } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getClinics(): Promise<Clinic[]>;
@@ -8,76 +10,39 @@ export interface IStorage {
   createContactRequest(request: InsertContactRequest): Promise<ContactRequest>;
 }
 
-export class MemStorage implements IStorage {
-  private clinics: Map<number, Clinic>;
-  private contactRequests: Map<number, ContactRequest>;
-  private currentClinicId: number;
-  private currentRequestId: number;
-
-  constructor() {
-    this.clinics = new Map();
-    this.contactRequests = new Map();
-    this.currentClinicId = 1;
-    this.currentRequestId = 1;
-
-    // Add some sample clinics
-    const sampleClinics: Omit<Clinic, "id">[] = [
-      {
-        name: "Smile Dental Care",
-        address: "123 Main St",
-        city: "Mumbai",
-        state: "Maharashtra",
-        pinCode: "400001",
-        phone: "1234567890",
-        email: "smile@example.com"
-      },
-      {
-        name: "Dental Excellence",
-        address: "456 Park Road",
-        city: "Delhi",
-        state: "Delhi",
-        pinCode: "110001",
-        phone: "9876543210",
-        email: "excellence@example.com"
-      }
-    ];
-
-    sampleClinics.forEach(clinic => {
-      this.clinics.set(this.currentClinicId, {
-        ...clinic,
-        id: this.currentClinicId++
-      });
-    });
-  }
-
+export class DatabaseStorage implements IStorage {
   async getClinics(): Promise<Clinic[]> {
-    return Array.from(this.clinics.values());
+    return await db.select().from(clinics);
   }
 
   async getClinicsByState(state: string): Promise<Clinic[]> {
-    return Array.from(this.clinics.values()).filter(
-      clinic => clinic.state.toLowerCase() === state.toLowerCase()
-    );
+    return await db
+      .select()
+      .from(clinics)
+      .where(eq(clinics.state, state));
   }
 
   async getClinicsByCity(city: string): Promise<Clinic[]> {
-    return Array.from(this.clinics.values()).filter(
-      clinic => clinic.city.toLowerCase() === city.toLowerCase()
-    );
+    return await db
+      .select()
+      .from(clinics)
+      .where(eq(clinics.city, city));
   }
 
   async getClinicsByPinCode(pinCode: string): Promise<Clinic[]> {
-    return Array.from(this.clinics.values()).filter(
-      clinic => clinic.pinCode === pinCode
-    );
+    return await db
+      .select()
+      .from(clinics)
+      .where(eq(clinics.pinCode, pinCode));
   }
 
   async createContactRequest(request: InsertContactRequest): Promise<ContactRequest> {
-    const id = this.currentRequestId++;
-    const contactRequest = { ...request, id };
-    this.contactRequests.set(id, contactRequest);
+    const [contactRequest] = await db
+      .insert(contactRequests)
+      .values(request)
+      .returning();
     return contactRequest;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
