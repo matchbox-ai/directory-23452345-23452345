@@ -27,17 +27,17 @@ export default function Directory() {
   return (
     <div className="min-h-screen bg-blue-50">
       <div className="container mx-auto py-12 px-4">
-        <div className="flex items-center gap-6 mb-8">
+        <div className="flex flex-col items-center text-center mb-12">
           <img 
             src="/assets/toothlens-logo.png" 
             alt="Toothlens Logo" 
-            className="h-16 w-auto object-contain"
+            className="h-12 w-auto object-contain mb-6"
           />
           <div>
-            <h1 className="text-4xl font-bold text-gray-800">
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">
               Find a Dental Clinic
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Search our network of trusted dental clinics across India
             </p>
           </div>
