@@ -25,13 +25,16 @@ export default function Directory() {
   });
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4">
-        <h1 className="text-4xl font-bold mb-8 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-          Dental Clinic Directory
+    <div className="min-h-screen bg-blue-50">
+      <div className="container mx-auto py-12 px-4">
+        <h1 className="text-4xl font-bold mb-2 text-gray-800">
+          Find a Dental Clinic
         </h1>
-        
-        <Card className="mb-8">
+        <p className="text-lg text-gray-600 mb-8">
+          Search our network of trusted dental clinics across India
+        </p>
+
+        <Card className="mb-8 shadow-md hover:shadow-lg transition-shadow duration-200">
           <CardContent className="pt-6">
             <SearchFilters
               onSearch={setSearchParams}
