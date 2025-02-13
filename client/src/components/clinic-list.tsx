@@ -56,7 +56,7 @@ export default function ClinicList({ clinics, isLoading, searchParams }: ClinicL
             <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
               We're currently working on building a network of trusted dental practices in {location}. Sign up below and we'll notify you when new clinics join our network in your area.
             </p>
-            <Button 
+            <Button
               className="bg-blue-500 hover:bg-blue-600 transition-colors"
               onClick={() => setShowSignupModal(true)}
             >
@@ -64,9 +64,10 @@ export default function ClinicList({ clinics, isLoading, searchParams }: ClinicL
             </Button>
           </CardContent>
         </Card>
-        <SignupModal 
+        <SignupModal
           open={showSignupModal}
           onClose={() => setShowSignupModal(false)}
+          location={location}
         />
       </>
     );
@@ -76,7 +77,7 @@ export default function ClinicList({ clinics, isLoading, searchParams }: ClinicL
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {clinics.sort((a, b) => a.name.localeCompare(b.name)).map((clinic) => (
-          <Card 
+          <Card
             key={clinic.id}
             className="shadow-md hover:shadow-lg transition-all duration-200 hover:translate-y-[-2px]"
           >
@@ -110,7 +111,7 @@ export default function ClinicList({ clinics, isLoading, searchParams }: ClinicL
                   </div>
                 )}
 
-                <Button 
+                <Button
                   className="w-full bg-blue-500 hover:bg-blue-600 transition-colors"
                   onClick={() => setSelectedClinic(clinic)}
                 >
@@ -127,9 +128,10 @@ export default function ClinicList({ clinics, isLoading, searchParams }: ClinicL
         onClose={() => setSelectedClinic(null)}
       />
 
-      <SignupModal 
+      <SignupModal
         open={showSignupModal}
         onClose={() => setShowSignupModal(false)}
+        location={searchParams?.city || searchParams?.state || searchParams?.pinCode || "your area"}
       />
     </>
   );

@@ -32,9 +32,10 @@ type SignupForm = z.infer<typeof signupSchema>;
 interface SignupModalProps {
   open: boolean;
   onClose: () => void;
+  location?: string;
 }
 
-export default function SignupModal({ open, onClose }: SignupModalProps) {
+export default function SignupModal({ open, onClose, location = "your area" }: SignupModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -51,14 +52,26 @@ export default function SignupModal({ open, onClose }: SignupModalProps) {
   const onSubmit = async (data: SignupForm) => {
     setIsSubmitting(true);
     try {
-      // Here you would typically make an API call to save the data
-      console.log("Form data:", data);
-      
+      const response = await fetch('/api/notify-me', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          location
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit');
+      }
+
       toast({
         title: "Thank you for signing up!",
         description: "We'll notify you when new clinics join our network in your area.",
       });
-      
+
       onClose();
       form.reset();
     } catch (error) {
