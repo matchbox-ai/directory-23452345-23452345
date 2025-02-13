@@ -22,6 +22,7 @@ export default function Directory() {
 
   const { data: clinics, isLoading } = useQuery<Clinic[]>({
     queryKey,
+    keepPreviousData: true, // Keep showing previous results while loading new ones
   });
 
   return (

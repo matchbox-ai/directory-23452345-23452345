@@ -20,12 +20,39 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
   const [city, setCity] = useState<string>("");
   const [pinCode, setPinCode] = useState<string>("");
 
-  const handleSearch = () => {
+  const handleStateChange = (value: string) => {
+    setState(value);
+    setCity(""); // Reset city when state changes
     onSearch({
-      state: state || undefined,
-      city: city || undefined,
+      state: value || undefined,
       pinCode: pinCode || undefined
     });
+  };
+
+  const handleCityChange = (value: string) => {
+    setCity(value);
+    onSearch({
+      state: state || undefined,
+      city: value || undefined,
+      pinCode: pinCode || undefined
+    });
+  };
+
+  const handlePinCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPinCode(value);
+    if (value.length === 6) { // Only search when PIN code is 6 digits
+      onSearch({
+        state: state || undefined,
+        city: city || undefined,
+        pinCode: value
+      });
+    } else if (value === '') { // If PIN is cleared, show previous state/city results
+      onSearch({
+        state: state || undefined,
+        city: city || undefined
+      });
+    }
   };
 
   const handleClear = () => {
@@ -38,7 +65,7 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Select value={state} onValueChange={setState}>
+        <Select value={state} onValueChange={handleStateChange}>
           <SelectTrigger>
             <SelectValue placeholder="Select State" />
           </SelectTrigger>
@@ -51,7 +78,7 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
           </SelectContent>
         </Select>
 
-        <Select value={city} onValueChange={setCity} disabled={!state}>
+        <Select value={city} onValueChange={handleCityChange} disabled={!state}>
           <SelectTrigger>
             <SelectValue placeholder="Select City" />
           </SelectTrigger>
@@ -67,16 +94,15 @@ export default function SearchFilters({ onSearch }: SearchFiltersProps) {
         <Input
           placeholder="Search by PIN code"
           value={pinCode}
-          onChange={(e) => setPinCode(e.target.value)}
+          onChange={handlePinCodeChange}
+          maxLength={6}
+          pattern="[0-9]*"
         />
       </div>
 
-      <div className="flex gap-2 justify-end">
+      <div className="flex justify-end">
         <Button variant="outline" onClick={handleClear}>
-          Clear
-        </Button>
-        <Button onClick={handleSearch}>
-          Search
+          Clear Filters
         </Button>
       </div>
     </div>
