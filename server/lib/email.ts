@@ -25,7 +25,7 @@ interface ClinicContactSubmission {
   message?: string;
 }
 
-export async function sendNotifyMeEmail(submission: NotifyMeSubmission) {
+export async function sendNotifyMeEmail(submission: NotifyMeSubmission): Promise<boolean> {
   const html = `
     <h2>New Location Interest Notification</h2>
     <p>Someone has expressed interest in dental practices in ${submission.location}</p>
@@ -39,20 +39,27 @@ export async function sendNotifyMeEmail(submission: NotifyMeSubmission) {
   `;
 
   try {
-    await mailService.send({
+    console.log('Sending notify-me email to:', 'manoj@toothlens.com');
+    const msg = {
       to: 'manoj@toothlens.com',
-      from: 'notifications@toothlens.com', // Replace with your verified sender
+      from: 'notifications@toothlens.com',
       subject: `New Location Interest: ${submission.location}`,
       html,
-    });
+    };
+
+    await mailService.send(msg);
+    console.log('Notify-me email sent successfully');
     return true;
   } catch (error) {
     console.error('SendGrid email error:', error);
+    if (error.response) {
+      console.error('SendGrid API response:', error.response.body);
+    }
     return false;
   }
 }
 
-export async function sendClinicContactEmail(submission: ClinicContactSubmission) {
+export async function sendClinicContactEmail(submission: ClinicContactSubmission): Promise<boolean> {
   const html = `
     <h2>New Clinic Contact Request</h2>
     <p>Someone has requested information about ${submission.clinicName}</p>
@@ -71,15 +78,22 @@ export async function sendClinicContactEmail(submission: ClinicContactSubmission
   `;
 
   try {
-    await mailService.send({
+    console.log('Sending clinic contact email to:', 'manoj@toothlens.com');
+    const msg = {
       to: 'manoj@toothlens.com',
-      from: 'notifications@toothlens.com', // Replace with your verified sender
+      from: 'notifications@toothlens.com',
       subject: `New Contact Request: ${submission.clinicName}`,
       html,
-    });
+    };
+
+    await mailService.send(msg);
+    console.log('Clinic contact email sent successfully');
     return true;
   } catch (error) {
     console.error('SendGrid email error:', error);
+    if (error.response) {
+      console.error('SendGrid API response:', error.response.body);
+    }
     return false;
   }
 }

@@ -32,17 +32,28 @@ export function registerRoutes(app: Express): Server {
     }
 
     const contact = await storage.createContactRequest(parsed.data);
+    const clinic = await storage.getClinic(parsed.data.clinicId);
 
-    // Send email notification
-    await sendClinicContactEmail({
-      firstName: parsed.data.firstName,
-      lastName: parsed.data.lastName,
-      email: parsed.data.email,
-      phone: parsed.data.phone,
-      clinicName: parsed.data.clinicName,
-      clinicLocation: parsed.data.clinicLocation,
-      message: parsed.data.message
-    });
+    if (!clinic) {
+      return res.status(404).json({ error: "Clinic not found" });
+    }
+
+    try {
+      // Send email notification
+      await sendClinicContactEmail({
+        firstName: parsed.data.firstName,
+        lastName: parsed.data.lastName,
+        email: parsed.data.email,
+        phone: parsed.data.phone,
+        clinicName: clinic.name,
+        clinicLocation: `${clinic.city}, ${clinic.state}`,
+        message: parsed.data.message
+      });
+      console.log('Contact email sent successfully');
+    } catch (error) {
+      console.error('Failed to send contact email:', error);
+      // Don't return error to client, just log it
+    }
 
     res.json(contact);
   });
@@ -57,7 +68,7 @@ export function registerRoutes(app: Express): Server {
     }
 
     try {
-      await sendNotifyMeEmail({
+      const success = await sendNotifyMeEmail({
         firstName,
         lastName,
         email,
@@ -65,6 +76,11 @@ export function registerRoutes(app: Express): Server {
         location
       });
 
+      if (!success) {
+        throw new Error('Failed to send notification email');
+      }
+
+      console.log('Notification email sent successfully');
       res.json({ success: true });
     } catch (error) {
       console.error('Failed to send notification email:', error);
