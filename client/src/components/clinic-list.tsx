@@ -64,7 +64,7 @@ export default function ClinicList({ clinics, isLoading }: ClinicListProps) {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 mt-1 text-blue-500" />
+                  <MapPin className="w-5 h-5 mt-1 text-blue-500 flex-shrink-0" />
                   <div className="text-gray-600">
                     <p>{clinic.address}</p>
                     <p>{clinic.city}, {clinic.state}</p>
@@ -74,15 +74,15 @@ export default function ClinicList({ clinics, isLoading }: ClinicListProps) {
 
                 {clinic.phone && (
                   <div className="flex items-center gap-3">
-                    <Phone className="w-4 h-4 text-blue-500" />
-                    <span className="text-gray-600">{clinic.phone}</span>
+                    <Phone className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                    <span className="text-gray-600 break-all">{clinic.phone}</span>
                   </div>
                 )}
 
                 {clinic.email && (
                   <div className="flex items-center gap-3">
-                    <Mail className="w-4 h-4 text-blue-500" />
-                    <span className="text-gray-600">{clinic.email}</span>
+                    <Mail className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                    <span className="text-gray-600 break-all">{clinic.email.toLowerCase()}</span>
                   </div>
                 )}
 

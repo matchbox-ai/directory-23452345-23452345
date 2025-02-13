@@ -27,11 +27,11 @@ export default function Directory() {
   return (
     <div className="min-h-screen bg-blue-50">
       <div className="container mx-auto py-12 px-4">
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-6 mb-8">
           <img 
-            src="/toothlens-logo.png" 
+            src="/assets/toothlens-logo.png" 
             alt="Toothlens Logo" 
-            className="h-12 w-auto"
+            className="h-16 w-auto object-contain"
           />
           <div>
             <h1 className="text-4xl font-bold text-gray-800">
