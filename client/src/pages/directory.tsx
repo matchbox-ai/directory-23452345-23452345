@@ -55,6 +55,7 @@ export default function Directory() {
         <ClinicList 
           clinics={clinics || []} 
           isLoading={isLoading}
+          searchParams={searchParams}
         />
       </div>
     </div>

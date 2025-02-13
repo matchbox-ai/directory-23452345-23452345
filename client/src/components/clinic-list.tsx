@@ -9,9 +9,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface ClinicListProps {
   clinics: Clinic[];
   isLoading: boolean;
+  searchParams?: {
+    state?: string;
+    city?: string;
+    pinCode?: string;
+  };
 }
 
-export default function ClinicList({ clinics, isLoading }: ClinicListProps) {
+export default function ClinicList({ clinics, isLoading, searchParams }: ClinicListProps) {
   const [selectedClinic, setSelectedClinic] = useState<Clinic | null>(null);
 
   if (isLoading) {
@@ -36,13 +41,24 @@ export default function ClinicList({ clinics, isLoading }: ClinicListProps) {
   }
 
   if (clinics.length === 0) {
+    const location = searchParams?.city || searchParams?.state || searchParams?.pinCode || "this area";
+
     return (
       <Card className="shadow-md">
         <CardContent className="py-12 text-center">
           <Building2 className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <p className="text-lg text-gray-600">
-            No clinics found. Try different search criteria.
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            We're Expanding Our Network
+          </h3>
+          <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+            We're currently working on building a network of trusted dental practices in {location}. Sign up below and we'll notify you when new clinics join our network in your area.
           </p>
+          <Button 
+            className="bg-blue-500 hover:bg-blue-600 transition-colors"
+            onClick={() => window.location.href = '/contact'}
+          >
+            Notify Me
+          </Button>
         </CardContent>
       </Card>
     );
